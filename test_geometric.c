@@ -24,8 +24,8 @@ void testisRectangle(void){
     p[3].x = 1;
 
     p[0].y = 0;
-    p[1].y = 1;
-    p[2].y = 1;
+    p[1].y = 2;
+    p[2].y = 2;
     p[3].y = 0;
 
     object.a = p[0];
@@ -33,7 +33,7 @@ void testisRectangle(void){
     object.c = p[2];
     object.d = p[3];
 
-    CU_ASSERT(isRectangle(object) == 1);
+    CU_ASSERT(isRectangle(object) == 2);
 }
 
 void testisTriangle(void){
@@ -42,12 +42,12 @@ void testisTriangle(void){
 
 	//equilateral
 	p1[0].x = 0;
-    p1[1].x = 0;
-    p1[2].x = 0;
+    p1[1].x = 5;
+    p1[2].x = 2.5;
 
 	p1[0].y = 0;
-    p1[1].y = 3;
-    p1[2].y = 4;
+    p1[1].y = 0;
+    p1[2].y = sqrt(18.75);
 
 	//isocèle
 	p2[0].x = 0;
@@ -59,13 +59,13 @@ void testisTriangle(void){
     p2[2].y = 10;
 
 	//rectangle
-	p3[0].x = -3;
+	p3[0].x = 0;
     p3[1].x = 2;
-    p3[2].x = 2;
+    p3[2].x = 1;
 
-	p3[0].y = -1;
-    p3[1].y = -1;
-    p3[2].y = 3;
+	p3[0].y = 0;
+    p3[1].y = 0;
+    p3[2].y = 1;
 
 
 	object1.a = p1[0];
