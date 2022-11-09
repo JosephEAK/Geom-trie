@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
 #include <math.h>
 
-#include <CUnit/CUnit.h>
-#include <CUnit/Basic.h>
-
 #include "geometric.h"
+
+#define APPROX_EPS 0.0001
+static const float M_PI_F = (float)M_PI;
 
 int perimeter (){
     return 0 ;
@@ -21,35 +19,53 @@ int cube(){
     return 0;
 }
 
-int getCoord (coord *p){
-    return 0;
+int approx(float a, float b) {
+  int ret;
+  if (fabsf(a) == 0 || fabsf(b) == 0) {
+    ret = fabsf(a - b) <= APPROX_EPS;
+  } else {
+    ret = fabsf(a - b) <= APPROX_EPS * MAX(fabsf(a), fabsf(b));
+    }
+  return ret;
+}
+
+float distance(coord a, coord b){
+    return sqrt(pow((b.x - a.x),2) + pow((b.y - a.y),2));
+}
+
+float angle (line A, line B, line C){
+    float ang, rad;
+    float A2 = pow(A.distance,2), B2 = pow(B.distance,2), C2 = pow(C.distance,2);
+    rad = acos(( B2 - C2 - A2 )/( -2 * A.distance * C.distance));
+    return ang = (180/M_PI_F) * rad;
 }
 
 int isRectangle (rectangle object){
 
-    double hypotenuse1, hypotenuse2;
+    float hypotenuse1, hypotenuse2;
     line A, B, C, D;
 
     A.p1 = object.a;
     A.p2 = object.b;
-    A.distance = sqrt(pow((A.p2.x - A.p1.x),2) + pow((A.p2.y - A.p1.y),2));
+    A.distance = distance(A.p1, A.p2);
 
     B.p1 = object.b;
     B.p2 = object.c;
-    B.distance = sqrt(pow((B.p2.x - B.p1.x),2) + pow((B.p2.y - B.p1.y),2));
+    B.distance = distance(B.p1, B.p2);
 
     C.p1 = object.c;
     C.p2 = object.d;
-    C.distance = sqrt(pow((C.p2.x - C.p1.x),2) + pow((C.p2.y - C.p1.y),2));
+    C.distance = distance(C.p1, C.p2);
 
     D.p1 = object.d;
     D.p2 = object.a;
-    D.distance = sqrt(pow((D.p2.x - D.p1.x),2) + pow((D.p2.y - D.p1.y),2));
+    D.distance = distance(D.p1, D.p2);
 
+    /*
     printf("Distance A: %f\n", A.distance);
     printf("Distance B: %f\n", B.distance);
     printf("Distance C: %f\n", C.distance);
-    printf("Distance D: %f\n", D.distance);
+    printf("Distance D: %f\n", D.distance);*/
 
     hypotenuse1 = sqrt(pow(A.distance,2)+pow(B.distance,2));
     hypotenuse2 = sqrt(pow(D.distance,2)+pow(C.distance,2));
@@ -73,50 +89,47 @@ int isRectangle (rectangle object){
 int isTriangle(triangle object){
 
     line A,B,C;
-    double angA, angB, angC;
-    double radA, radB, radC;
-    int totalAng;
+    float angA, angB, angC;
+    float radA, radB, radC;
+    float totalAng;
 
     A.p1 = object.a;
     A.p2 = object.b;
-    A.distance = sqrt(pow((A.p2.x - A.p1.x),2) + pow((A.p2.y - A.p1.y),2));
+    A.distance = distance(A.p1, A.p2);
 
     B.p1 = object.c;
     B.p2 = object.b;
-    B.distance = sqrt(pow((B.p2.x - B.p1.x),2) + pow((B.p1.y - B.p2.y),2));
+    B.distance = distance(B.p1, B.p2);
 
     C.p1 = object.a;
     C.p2 = object.c;
-    C.distance = sqrt(pow((C.p2.x - C.p1.x),2) + pow((C.p2.y - C.p1.y),2));
+    C.distance = distance(C.p1, C.p2);
 
-    double A2 = pow(A.distance,2), B2 = pow(B.distance,2), C2 = pow(C.distance,2);
-
-    radA = acos(( B2 - C2 - A2 )/( -2 * B.distance * C.distance));
-    angA = (180/M_PI) * radA;
-
-    radB = acos(( C2 - B2 - A2 )/( -2 * A.distance * C.distance));
-    angB = (180/M_PI) * radB;
-
-    radC = acos(( A2 - C2 - B2 )/( -2 * A.distance * B.distance));
-    angC = (180/M_PI) * radC;
+    angA = angle(A, B, C);
+    angB = angle(B, C, A);
+    angC = angle(C, A, B);
 
     totalAng = angA + angB + angC;
 
-    /*if (totalAng != 180){
+    /*printf("A: %lf, B: %lf, C:%lf \n", A.distance, B.distance, C.distance);
+    printf("radA:%lf, radB:%lf, radC:%lf \n", radA, radB, radC);
+    printf("angA:%lf + angB:%lf + angC:%lf = %lf \n",angA,angB,angC, angA + angB + angC);*/
+
+    if (totalAng != 180){
         printf("Ceci n'est pas un triangle \n");
         printf("angle total = %lf \n", angA + angB + angC);
         return 0;
-    }*/
-
-    printf("A: %lf, B: %lf, C:%lf \n", A.distance, B.distance, C.distance);
-
-    if (A.distance == B.distance && B.distance == C.distance && A.distance == C.distance){
+    }
+    
+    if (approx(A.distance, B.distance) && approx(B.distance, C.distance) && approx(A.distance, C.distance)){
         printf("C'est un triangle équilatéral \n");
         return 1;
     }
-    else if ((A.distance == B.distance && A.distance == C.distance) ||
-             (C.distance == A.distance && C.distance == B.distance) ||
-             (B.distance == A.distance && B.distance == A.distance)){
+    else if (
+            approx(A.distance, B.distance) || 
+            approx(A.distance, C.distance) || 
+            approx(B.distance, C.distance)
+            ){
         printf("C'est un triangle isocèle \n");
         return 2;
     }
@@ -129,6 +142,5 @@ int isTriangle(triangle object){
         return -1;
     }
     return -1;
-
 }
 
