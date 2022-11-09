@@ -32,19 +32,19 @@ int isRectangle (rectangle object){
 
     A.p1 = object.a;
     A.p2 = object.b;
-    A.distance = sqrt(A.p1.x * A.p1.x + A.p2.y * A.p2.y);
+    A.distance = sqrt(pow((A.p2.x - A.p1.x),2) + pow((A.p2.y - A.p1.y),2));
 
     B.p1 = object.b;
     B.p2 = object.c;
-    B.distance = sqrt(B.p1.x * B.p1.x + B.p2.y * B.p2.y);
+    B.distance = sqrt(pow((B.p2.x - B.p1.x),2) + pow((B.p2.y - B.p1.y),2));
 
     C.p1 = object.c;
     C.p2 = object.d;
-    C.distance = sqrt(C.p1.x * C.p1.x + C.p2.y * C.p2.y);
+    C.distance = sqrt(pow((C.p2.x - C.p1.x),2) + pow((C.p2.y - C.p1.y),2));
 
     D.p1 = object.d;
     D.p2 = object.a;
-    D.distance = sqrt(D.p1.x * D.p1.x + D.p2.y * D.p2.y);
+    D.distance = sqrt(pow((D.p2.x - D.p1.x),2) + pow((D.p2.y - D.p1.y),2));
 
     printf("Distance A: %f\n", A.distance);
     printf("Distance B: %f\n", B.distance);
@@ -58,7 +58,8 @@ int isRectangle (rectangle object){
        (A.distance == B.distance == C.distance == D.distance)){
         printf("C'est un carré \n");
         return 1;
-    }else if ((A.distance == C.distance && B.distance == D.distance)){
+    }else if (hypotenuse1 == hypotenuse2 &&
+       (A.distance == C.distance && B.distance == D.distance)){
         printf("C'est un rectangle \n");
         return 2;
     } else{
@@ -80,12 +81,12 @@ int isTriangle(triangle object){
     A.p2 = object.b;
     A.distance = sqrt(pow((A.p2.x - A.p1.x),2) + pow((A.p2.y - A.p1.y),2));
 
-    B.p1 = object.b;
-    B.p2 = object.c;
-    B.distance = sqrt(pow((B.p2.x - B.p1.x),2) + pow((B.p2.y - B.p1.y),2));
+    B.p1 = object.c;
+    B.p2 = object.b;
+    B.distance = sqrt(pow((B.p2.x - B.p1.x),2) + pow((B.p1.y - B.p2.y),2));
 
-    C.p1 = object.c;
-    C.p2 = object.a;
+    C.p1 = object.a;
+    C.p2 = object.c;
     C.distance = sqrt(pow((C.p2.x - C.p1.x),2) + pow((C.p2.y - C.p1.y),2));
 
     double A2 = pow(A.distance,2), B2 = pow(B.distance,2), C2 = pow(C.distance,2);
@@ -101,11 +102,11 @@ int isTriangle(triangle object){
 
     totalAng = angA + angB + angC;
 
-    if (totalAng != 180){
+    /*if (totalAng != 180){
         printf("Ceci n'est pas un triangle \n");
         printf("angle total = %lf \n", angA + angB + angC);
         return 0;
-    }
+    }*/
 
     printf("A: %lf, B: %lf, C:%lf \n", A.distance, B.distance, C.distance);
 
